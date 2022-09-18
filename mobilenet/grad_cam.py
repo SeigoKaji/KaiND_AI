@@ -54,10 +54,10 @@ def save_grad_cam_outputs(uint8_BGRimg, heatmap, output_image, idx, classname):
         os.makedirs(output_dir_path)
     cv2.imwrite(os.path.join(output_dir_path, 'input_img_{:04}.png'.format(idx)), uint8_BGRimg)
 
-    output_dir_path = os.path.join(output_parent_dir, "output_csv", classname)
-    if not os.path.exists(output_dir_path):
-        os.makedirs(output_dir_path)
-    np.savetxt(os.path.join(output_dir_path, 'cam_{:04}.csv'.format(idx)), heatmap, delimiter=',', fmt='%f')
+    # output_dir_path = os.path.join(output_parent_dir, "output_csv", classname)
+    # if not os.path.exists(output_dir_path):
+    #     os.makedirs(output_dir_path)
+    # np.savetxt(os.path.join(output_dir_path, 'cam_{:04}.csv'.format(idx)), heatmap, delimiter=',', fmt='%f')
 
     output_dir_path = os.path.join(output_parent_dir, "output", classname)
     if not os.path.exists(output_dir_path):
