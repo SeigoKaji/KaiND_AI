@@ -3,6 +3,21 @@ import math
 import tensorflow as tf
 from load import Get_Training_and_Test_Image
 
+
+# グラボのメモリが不足してる時はこれをいれる
+#グラボがないときはコメントアウト
+physical_devices = tf.config.list_physical_devices('GPU')
+gpu_id = [0] # 使用するGPUをリストで指定
+if len(physical_devices) > 0:
+    for i, device in enumerate(physical_devices):
+        if i in gpu_id:
+            tf.config.experimental.set_visible_devices(physical_devices[i], 'GPU')
+            tf.config.experimental.set_memory_growth(device, True)
+            print('{} memory growth: {}'.format(device, tf.config.experimental.get_memory_growth(device)))
+else:
+    print("Not enough GPU hardware devices available")
+
+
 #設定
 BATCH_SIZE = 32
 EPOCH_NUM = 20
@@ -17,7 +32,7 @@ x_train, y_train, x_test, y_test, dataset_cate_name = Get_Training_and_Test_Imag
 # numpy --> tf.data
 train_dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train))
 test_dataset = tf.data.Dataset.from_tensor_slices((x_test, y_test))
-print(train_dataset)
+# print(train_dataset)
 # shuffle
 # batch
 train_dataset = train_dataset.shuffle(x_train.shape[0]).batch(BATCH_SIZE)
@@ -43,7 +58,7 @@ model.compile(
   loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True, label_smoothing=0.1),
   metrics=['accuracy'])
 
-base_model.summary()
+# base_model.summary()
 # mymodel.summary()
 model.summary()
 

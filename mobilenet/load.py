@@ -15,6 +15,27 @@ import cv2
 from PIL import Image
 import numpy as np
 
+########################################################################
+###評価用メイン処理, 要求された画像数のx_test, y_testを返す###
+########################################################################
+def Get_Test_Image():
+
+    #データセット内のデータセット群を取得
+    dataset_folders_path = Get_dataset_name()
+
+    #カテゴリ名取得
+    dataset_cate_name = Get_dataset_name()
+
+    #画像データサイズを決定(このサイズにリサイズする)
+    img_size=(224, 224)
+
+    #データから入力行列, 出力行列を作成(評価用)
+    x_test, y_test, filepaths = Get_xy_data(dataset_folders_path, dataset_cate_name, img_size, 1)
+
+    print(type(x_test), x_test.shape)
+    print(type(y_test), y_test.shape)
+
+    return x_test, y_test, dataset_cate_name, filepaths
 
 ########################################################################
 ###メイン処理, 要求された画像数のx_train, y_trainm, x_test, y_testを返す###
@@ -31,10 +52,10 @@ def Get_Training_and_Test_Image():
     img_size=(224, 224)
 
     #データから入力行列, 出力行列を作成(訓練用)
-    x_train, y_train = Get_xy_data(dataset_folders_path, dataset_cate_name, img_size, 0)
+    x_train, y_train, _ = Get_xy_data(dataset_folders_path, dataset_cate_name, img_size, 0)
 
     #データから入力行列, 出力行列を作成(評価用)
-    x_test, y_test = Get_xy_data(dataset_folders_path, dataset_cate_name, img_size, 1)
+    x_test, y_test, _ = Get_xy_data(dataset_folders_path, dataset_cate_name, img_size, 1)
 
     print(type(x_train), x_train.shape)
     print(type(y_train), y_train.shape)
@@ -65,6 +86,7 @@ def Get_xy_data(dataset_folders_path, dataset_cate_name, img_size, mode):
 
     #行列用意
     x_mats, y_mats = [], []
+    filepaths = []
 
     #x_dataのパス用意
     x_data_paths = ["temp" for i in range(len(dataset_folders_path))]
@@ -88,6 +110,8 @@ def Get_xy_data(dataset_folders_path, dataset_cate_name, img_size, mode):
 
             #画像の相対パス取得
             img_file_path = x_data_paths[folder_cnt] + "/" + img_file_names[img_file_cnt]
+            filepaths.append(img_file_path)
+
 
             #画像の前処理
             image = preparation_img(img_file_path, img_size)
@@ -112,7 +136,7 @@ def Get_xy_data(dataset_folders_path, dataset_cate_name, img_size, mode):
 
     #np.savetxt(img_file_names[img_file_cnt] + "_x.csv" ,x_mats[0,:,:,0], delimiter=',')
 
-    return x_mats, y_mats
+    return x_mats, y_mats, filepaths
 
 #########################
 ########画像前準備########
